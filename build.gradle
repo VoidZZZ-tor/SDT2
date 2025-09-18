@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'org.example'
-version = findProperty('version') ?: '0.1.0'
+version = findProperty('version') ?: '0.2.0'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_23
@@ -14,11 +14,19 @@ java {
 }
 
 application {
-    mainClass = 'org.example.TodoApp'
+    mainClass = 'org.example.SDT2'
 }
 
 repositories {
     mavenCentral()
+    maven {
+        name = 'GitHubPackages'
+        url = uri('https://maven.pkg.github.com/VoidZZZ-tor/SDT2')
+        credentials {
+            username = System.getenv('GITHUB_ACTOR')
+            password = System.getenv('GITHUB_TOKEN')
+        }
+    }
 }
 
 dependencies {
@@ -32,7 +40,7 @@ test {
 }
 
 shadowJar {
-    archiveBaseName.set('todo-app')
+    archiveBaseName.set('SDT2')
     archiveClassifier.set('')
     archiveVersion.set(project.version.toString())
     mergeServiceFiles()
@@ -75,9 +83,17 @@ publishing {
             artifactId = 'SDT2'
             version = project.version
             from components.java
+            artifact tasks.shadowJar
         }
     }
     repositories {
-        mavenLocal()
+        maven {
+            name = 'GitHubPackages'
+            url = uri('https://maven.pkg.github.com/VoidZZZ-tor/SDT2')
+            credentials {
+                username = System.getenv('GITHUB_ACTOR')
+                password = System.getenv('GITHUB_TOKEN')
+            }
+        }
     }
 }
