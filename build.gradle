@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'maven-publish'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
@@ -64,5 +65,29 @@ tasks.named('build') {
 tasks.withType(Copy).configureEach {
     filePermissions {
         unix '755'
+    }
+}
+
+publishing {
+    publications{
+        mavenJava(MavenPublication) {
+            groupID = 'org.example'
+            artifactId = 'SDT2'
+            version = project.version
+
+            artifact(tasks.shadowJar) {
+                classifier = null
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = ""
+            url = uri("https://maven.pkg.github.com/VoidZZZ-tor/SDT2")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
     }
 }
